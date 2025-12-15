@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>RPG - Criação de Personagem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #eee;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #f5c542;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select, button {
+            margin-top: 5px;
+            padding: 5px;
+            width: 200px;
+        }
+
+        button {
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #222;
+            border-radius: 8px;
+            width: 350px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Criação de Personagem RPG</h1>
+
+<label>Nome:
+    <input type="text" id="nome">
+</label>
+
+<label>Raça:
+    <select id="raca"></select>
+</label>
+
+<label>Level (1-20):
+    <input type="number" id="level" min="1" max="20" value="1">
+</label>
+
+<label>Prestígio (0-2):
+    <input type="number" id="prestigio" min="0" max="2" value="0">
+</label>
+
+<button onclick="criarPersonagem()">Criar Personagem</button>
+
+<div class="status" id="resultado"></div>
+
+<script>
+/* ================================
+   FUNÇÃO ROLAR DANO XdY
+================================ */
+function rolarDano(dados, faces) {
+    let total = 0;
+    for (let i = 0; i < dados; i++) {
+        total += Math.floor(Math.random() * faces) + 1;
+    }
+    return total;
+}
+
+/* ================================
+   TABELA DE STATUS
+================================ */
+const TABELA_STATUS = {
+    1:  { vida: 20, dano: [1, 20],  mana: 100 },
+    2:  { vida: 30, dano: [1, 25],  mana: 120 },
+    3:  { vida: 45, dano: [1, 35],  mana: 150 },
+    4:  { vida: 60, dano: [1, 45],  mana: 175 },
+    5:  { vida: 80, dano: [2, 30],  mana: 225 },
+    6:  { vida: 105, dano: [3, 25], mana: 250 },
+    7:  { vida: 130, dano: [3, 30], mana: 300 },
+    8:  { vida: 160, dano: [1, 100], mana: 350 },
+    9:  { vida: 200, dano: [1, 120], mana: 400 },
+    10: { vida: 500, dano: [1, 200], mana: 500 },
+    11: { vida: 650, dano: [1, 240], mana: 650 },
+    12: { vida: 700, dano: [1, 260], mana: 750 },
+    13: { vida: 800, dano: [1, 300], mana: 800 },
+    14: { vida: 900, dano: [1, 350], mana: 825 },
+    15: { vida: 1000, dano: [2, 225], mana: 950 },
+    16: { vida: 1250, dano: [1, 500], mana: 1050 },
+    17: { vida: 1500, dano: [1, 600], mana: 1150 },
+    18: { vida: 1750, dano: [1, 750], mana: 1300 },
+    19: { vida: 2000, dano: [1, 800], mana: 1350 },
+    20: { vida: 2500, dano: [2, 500], mana: 1750 }
+};
+
+/* ================================
+   PRESTÍGIOS
+================================ */
+const PRESTIGIOS = {
+    0: 1.0,
+    1: 1.5,
+    2: 2.0
+};
+
+/* ================================
+   RAÇAS
+================================ */
+const RACAS = {
+    "Filho de Deus": {
+        vida_pct: 0.50,
+        mana_pct: 2.50,
+        dano_pct: 0.50,
+        defesa_pct: 0.30,
+        propriedades: ["Apagamento", "Dano da Alma", "Regeneração"]
+    },
+    "Elfo": {
+        mana_pct: 0.50,
+        dano_pct: 0.30,
+        propriedades: ["Regeneração Arcana", "Bônus com Arcos"]
+    },
+    "Demonio": {
+        vida_pct: 0.90,
+        dano_pct: 0.15,
+        propriedades: ["Sangue Ardente", "Magia de Fogo"]
+    },
+    "Dragao": {
+        vida_pct: 0.50,
+        dano_pct: 0.20,
+        propriedades: ["Imunidade a Fogo", "Voar", "Cuspir Fogo"]
+    },
+    "Cosmico": {
+        vida_pct: 0.15,
+        dano_pct: 0.40,
+        mana_pct: 0.25,
+        propriedades: ["Radiação", "Buff no Vácuo"]
+    },
+    "Humano": {
+        dano_pct: 0.25,
+        propriedades: ["Versatilidade", "Rage (lvl 15)"]
+    },
+    "VoidHeart": {
+        vida_pct: 0.35,
+        mana_pct: 0.15,
+        dano_pct: 0.60,
+        defesa_pct: 0.45,
+        propriedades: ["Tentáculos do Vazio", "Entrar no Vazio"]
+    }
+};
+
+/* ================================
+   POPULAR SELECT DE RAÇAS
+================================ */
+const racaSelect = document.getElementById("raca");
+for (let raca in RACAS) {
+    let option = document.createElement("option");
+    option.value = raca;
+    option.textContent = raca;
+    racaSelect.appendChild(option);
+}
+
+/* ================================
+   CRIAR PERSONAGEM
+================================ */
+function criarPersonagem() {
+    const nome = document.getElementById("nome").value;
+    const raca = document.getElementById("raca").value;
+    const level = parseInt(document.getElementById("level").value);
+    const prestigio = parseInt(document.getElementById("prestigio").value);
+
+    const base = TABELA_STATUS[level];
+    const mult = PRESTIGIOS[prestigio];
+    const racaData = RACAS[raca];
+
+    let vida = base.vida * mult * (1 + (racaData.vida_pct || 0));
+    let mana = base.mana * mult * (1 + (racaData.mana_pct || 0));
+
+    const [dados, faces] = base.dano;
+    let danoBase = rolarDano(dados, faces);
+    let danoTotal = danoBase * (1 + (racaData.dano_pct || 0));
+
+    let defesa = Math.floor(100 * (1 + (racaData.defesa_pct || 0)));
+
+    document.getElementById("resultado").innerHTML = `
+        <h3>Status Final</h3>
+        <b>Nome:</b> ${nome}<br>
+        <b>Raça:</b> ${raca}<br>
+        <b>Level:</b> ${level}<br>
+        <b>Prestígio:</b> ${prestigio}<br>
+        <hr>
+        <b>Vida:</b> ${Math.floor(vida)}<br>
+        <b>Mana:</b> ${Math.floor(mana)}<br>
+        <b>Dano:</b> ${Math.floor(danoTotal)}<br>
+        <b>Defesa:</b> ${defesa}<br>
+        <b>Propriedades:</b>
+        <ul>
+            ${racaData.propriedades.map(p => `<li>${p}</li>`).join("")}
+        </ul>
+    `;
+}
+</script>
+
+</body>
+</html>
