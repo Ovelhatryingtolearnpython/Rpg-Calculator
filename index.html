@@ -226,6 +226,12 @@
             animation: glow 2s infinite;
         }
 
+        .purelight-glow {
+            color: #fffacd;
+            text-shadow: 0 0 10px #fffacd, 0 0 20px #ffeb3b;
+            font-weight: bold;
+        }
+
         @keyframes glow {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.8; }
@@ -319,18 +325,34 @@
             2: { nome: "Prestígio 2", mult: 2.0 }  // +100%
         };
 
-        // Dados das raças (corrigidos conforme suas especificações)
+        // Dados das raças (com PureLight adicionado)
         const RACAS = {
+            "PureLight": {
+                buffs: {
+                    defesa: 0.45,      // 45% de defesa
+                    vida: 0.40,        // 40% de vida
+                    dano: 0.50,        // 50% de dano
+                    mana: 0.20         // 20% de mana
+                },
+                propriedades: [
+                    "Banhar de Luz (banha uma arma com luz, recebe +15% de dano e durabilidade) [permanente]",
+                    "Nível 5: Clarão Cegante - Luz tão grande que cega inimigos",
+                    "Nível 10: Transformar-se em uma bolinha de luz que voa",
+                    "Nível 15: Arcanjo de Luz - Forma angelical poderosa"
+                ],
+                descricao: "Entidade celestial de luz pura e proteção",
+                corDestaque: "#fffacd"
+            },
             "filho de deus": {
                 buffs: {
-                    dano: 0.50,       // 50% dmg
-                    vida: 0.50,       // 50% hp
-                    defesa: 0.30,     // 30% de defesa
-                    mana: 2.50,       // 250% de mana
-                    velocidade: 0.20, // 20% de velocidade
-                    xp: 0.30,         // 30% de xp
-                    dinheiro: 0.05,   // 5% de dinheiro
-                    regen: 0.10       // 10% de regen
+                    dano: 0.50,
+                    vida: 0.50,
+                    defesa: 0.30,
+                    mana: 2.50,
+                    velocidade: 0.20,
+                    xp: 0.30,
+                    dinheiro: 0.05,
+                    regen: 0.10
                 },
                 propriedades: [
                     "Apagamento (upa a cada nível)",
@@ -341,16 +363,16 @@
             },
             "elfo": {
                 buffs: {
-                    mana: 0.50,           // 50% mana
-                    magia: 0.30,          // 30% magia
-                    velocidade: 0.35,     // 35% speed
-                    regen: 0.05,          // 5% de regen
-                    tamanho: -0.05,       // -5% de tamanho
-                    xp: 0.10,            // 10% de xp
-                    arcos: 0.75,          // 75% dano com arcos
-                    espadasRapidas: 0.50, // 50% dano com espadas rápidas
-                    espadasPesadas: 0.55, // 55% dano com espadas pesadas
-                    velocidadeEspadas: 0.35 // 35% velocidade com espadas
+                    mana: 0.50,
+                    magia: 0.30,
+                    velocidade: 0.35,
+                    regen: 0.05,
+                    tamanho: -0.05,
+                    xp: 0.10,
+                    arcos: 0.75,
+                    espadasRapidas: 0.50,
+                    espadasPesadas: 0.55,
+                    velocidadeEspadas: 0.35
                 },
                 propriedades: [
                     "Nível 10: Regeneração Arcana (regenera metade da vida pela metade da mana)",
@@ -360,9 +382,9 @@
             },
             "demonio": {
                 buffs: {
-                    vida: -0.10,      // 90% de vida
-                    dano: 0.15,       // 15% de dmg
-                    danoRitual: 0.30  // 30% de danos em rituais
+                    vida: -0.10,
+                    dano: 0.15,
+                    danoRitual: 0.30
                 },
                 propriedades: [
                     "Sangue Ardente",
@@ -373,9 +395,9 @@
             },
             "dragao": {
                 buffs: {
-                    vida: 0.50,       // 50% a mais de vida
-                    dano: 0.20,       // 20% a mais de dano
-                    danoFogo: 0.60    // 60% dano de fogo
+                    vida: 0.50,
+                    dano: 0.20,
+                    danoFogo: 0.60
                 },
                 propriedades: [
                     "Imunidade a fogo",
@@ -388,12 +410,12 @@
             },
             "cosmico": {
                 buffs: {
-                    vida: 0.15,           // 15% de vida
-                    dano: 0.40,           // 40% de dano a mais
-                    danoCosmico: 0.35,    // 35% dano com armas cósmicas
-                    mana: 0.25,           // 25% de mana
-                    danoMagia: 0.25,      // 25% a mais de dano com magia
-                    reducaoMana: 0.35     // -35% de gasto de mana
+                    vida: 0.15,
+                    dano: 0.40,
+                    danoCosmico: 0.35,
+                    mana: 0.25,
+                    danoMagia: 0.25,
+                    reducaoMana: 0.35
                 },
                 propriedades: [
                     "Imunidade a radiação",
@@ -408,7 +430,7 @@
             },
             "humano": {
                 buffs: {
-                    aptidaoArmas: 0.25  // 25% de aptidao com armas
+                    aptidaoArmas: 0.25
                 },
                 propriedades: [
                     "Pode farmar aura",
@@ -418,14 +440,14 @@
             },
             "voidheart": {
                 buffs: {
-                    defesa: 0.45,           // 45% de defesa
-                    vida: 0.35,            // 35% de vida
-                    dano: 0.60,            // 60% de dano
-                    mana: 0.15,            // 15% de mana
-                    danoVazio: 0.40,       // 40% de dano no vazio
-                    defesaVazio: 0.40,     // 40% de defesa no vazio
-                    danoArmasVazio: 0.15,  // 15% dano com armas do vazio
-                    danoPureLight: 0.45    // 45% dano sobre Pure Light
+                    defesa: 0.45,
+                    vida: 0.35,
+                    dano: 0.60,
+                    mana: 0.15,
+                    danoVazio: 0.40,
+                    defesaVazio: 0.40,
+                    danoArmasVazio: 0.15,
+                    danoPureLight: 0.45
                 },
                 propriedades: [
                     "Tentáculos do Vazio",
@@ -461,8 +483,17 @@
                 const raca = RACAS[racaNome];
                 const div = document.createElement("div");
                 div.className = "race-option";
+                
+                // Destacar PureLight
+                if (racaNome === "PureLight") {
+                    div.style.border = "2px solid #ffeb3b";
+                    div.style.background = "rgba(255, 235, 59, 0.1)";
+                }
+                
                 div.innerHTML = `
-                    <strong style="color: #4d96ff">${racaNome.toUpperCase()}</strong><br>
+                    <strong style="${racaNome === 'PureLight' ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : 'color: #4d96ff'}">
+                        ${racaNome.toUpperCase()}
+                    </strong><br>
                     <small style="color: #b8b8d1">${raca.descricao}</small>
                 `;
                 
@@ -579,9 +610,15 @@
             const resultadoDiv = document.getElementById("resultado");
             resultadoDiv.style.display = "block";
             
+            // Estilo especial para PureLight
+            const isPureLight = racaSelecionada === "PureLight";
+            const tituloStyle = isPureLight ? 
+                'color: #fffacd; text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b;' : 
+                'color: #ff6b6b;';
+            
             resultadoDiv.innerHTML = `
-                <h2 style="color: #ff6b6b; text-align: center; margin-bottom: 30px;">
-                    🎭 ${nome} - ${racaSelecionada.toUpperCase()} 🎭
+                <h2 style="${tituloStyle} text-align: center; margin-bottom: 30px;">
+                    ${isPureLight ? '✨ ' : '🎭 '}${nome} - ${racaSelecionada.toUpperCase()}${isPureLight ? ' ✨' : ' 🎭'}
                 </h2>
                 
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -594,13 +631,13 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">❤️ VIDA</div>
-                        <div class="stat-value">${vidaFinal}</div>
+                        <div class="stat-value" style="${isPureLight ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : ''}">${vidaFinal}</div>
                         <small>Base: ${vidaBase} ${buffs.vida ? `(${formatarBuff(buffs.vida)})` : ''}</small>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-label">⚔️ DANO</div>
-                        <div class="stat-value">${danoFinal}</div>
+                        <div class="stat-value" style="${isPureLight ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : ''}">${danoFinal}</div>
                         <div class="dice-display">
                             ${rolagemDano.formula}: [${rolagemDano.rolagens.join(' + ')}] = ${danoBase}
                             ${buffs.dano ? `<br>${formatarBuff(buffs.dano)}` : ''}
@@ -609,31 +646,43 @@
                     
                     <div class="stat-card">
                         <div class="stat-label">🔮 MANA</div>
-                        <div class="stat-value">${manaFinal}</div>
+                        <div class="stat-value" style="${isPureLight ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : ''}">${manaFinal}</div>
                         <small>Base: ${manaBase} ${buffs.mana ? `(${formatarBuff(buffs.mana)})` : ''}</small>
                     </div>
                 </div>
                 
-                <div style="background: rgba(255, 107, 107, 0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3 style="color: #ff6b6b; margin-bottom: 15px;">🎯 BUFFS ATIVOS</h3>
+                <div style="background: ${isPureLight ? 'rgba(255, 235, 59, 0.1)' : 'rgba(255, 107, 107, 0.1)'}; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: ${isPureLight ? '#fffacd' : '#ff6b6b'}; margin-bottom: 15px;">🎯 BUFFS ATIVOS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
                         ${Object.entries(buffs)
                             .filter(([_, valor]) => valor !== 0)
                             .map(([nomeBuff, valor]) => `
-                                <div style="background: rgba(77, 150, 255, 0.1); padding: 8px; border-radius: 5px; text-align: center;">
+                                <div style="background: ${isPureLight ? 'rgba(255, 235, 59, 0.15)' : 'rgba(77, 150, 255, 0.1)'}; padding: 8px; border-radius: 5px; text-align: center;">
                                     <strong>${nomeBuff}:</strong> ${formatarBuff(valor)}
                                 </div>
                             `).join('')}
                     </div>
                 </div>
                 
-                <div class="properties-section">
-                    <h3 style="color: #4d96ff; margin-bottom: 15px;">🌟 PROPRIEDADES DA RAÇA</h3>
+                <div class="properties-section" style="${isPureLight ? 'border: 2px solid #ffeb3b; background: rgba(255, 235, 59, 0.05);' : ''}">
+                    <h3 style="color: ${isPureLight ? '#fffacd' : '#4d96ff'}; margin-bottom: 15px;">
+                        ${isPureLight ? '✨' : '🌟'} PROPRIEDADES DA RAÇA
+                    </h3>
                     ${dadosRaca.propriedades.map(prop => `
-                        <div class="property-item">
-                            ✅ ${prop}
+                        <div class="property-item" style="${isPureLight ? 'border-left-color: #ffeb3b; background: rgba(255, 235, 59, 0.1);' : ''}">
+                            ${isPureLight ? '✨' : '✅'} ${prop}
                         </div>
                     `).join('')}
+                    
+                    ${isPureLight ? `
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(255, 235, 59, 0.15); border-radius: 8px; border: 1px solid #ffeb3b;">
+                            <strong style="color: #fffacd;">⚠️ Fraquezas:</strong>
+                            <div style="margin-top: 10px;">
+                                • Vulnerável a magias de trevas (+30% de dano)<br>
+                                • Perde 20% dos bônus em escuridão absoluta
+                            </div>
+                        </div>
+                    ` : ''}
                 </div>
                 
                 <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #444;">
