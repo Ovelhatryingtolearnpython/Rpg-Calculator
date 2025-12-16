@@ -226,10 +226,31 @@
             animation: glow 2s infinite;
         }
 
+        /* Efeitos especiais para PureLight */
         .purelight-glow {
             color: #fffacd;
             text-shadow: 0 0 10px #fffacd, 0 0 20px #ffeb3b;
             font-weight: bold;
+        }
+
+        /* Efeitos especiais para VoidHeart */
+        .voidheart-glow {
+            color: #8b00ff;
+            text-shadow: 0 0 10px #8b00ff, 0 0 20px #4b0082;
+            font-weight: bold;
+        }
+
+        .voidheart-pulse {
+            animation: voidPulse 2s infinite alternate;
+        }
+
+        @keyframes voidPulse {
+            0% {
+                box-shadow: 0 0 5px rgba(139, 0, 255, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(139, 0, 255, 0.7), 0 0 25px rgba(75, 0, 130, 0.4);
+            }
         }
 
         @keyframes glow {
@@ -325,7 +346,7 @@
             2: { nome: "Prestígio 2", mult: 2.0 }  // +100%
         };
 
-        // Dados das raças (com PureLight adicionado)
+        // Dados das raças (com PureLight e VoidHeart atualizados)
         const RACAS = {
             "PureLight": {
                 buffs: {
@@ -341,7 +362,29 @@
                     "Nível 15: Arcanjo de Luz - Forma angelical poderosa"
                 ],
                 descricao: "Entidade celestial de luz pura e proteção",
-                corDestaque: "#fffacd"
+                corDestaque: "#fffacd",
+                estilo: "purelight"
+            },
+            "VoidHeart": {
+                buffs: {
+                    defesa: 0.45,
+                    vida: 0.35,
+                    dano: 0.60,
+                    mana: 0.15,
+                    danoVazio: 0.40,
+                    defesaVazio: 0.40,
+                    danoArmasVazio: 0.15,
+                    danoPureLight: 0.45
+                },
+                propriedades: [
+                    "Tentáculos do Vazio",
+                    "Entrar no Vazio (invisibilidade)",
+                    "Nível 10: Forma Verdadeira - Assume sua forma vazia completa",
+                    "Nível 20: Lorde do Vazio - Domínio total sobre o vazio"
+                ],
+                descricao: "Ser do vazio eterno com poderes da escuridão absoluta",
+                corDestaque: "#8b00ff",
+                estilo: "voidheart"
             },
             "filho de deus": {
                 buffs: {
@@ -359,7 +402,8 @@
                     "75% de dano da alma",
                     "50% de dano com qualquer arma"
                 ],
-                descricao: "Ser divino com poderes excepcionais"
+                descricao: "Ser divino com poderes excepcionais",
+                estilo: "normal"
             },
             "elfo": {
                 buffs: {
@@ -378,7 +422,8 @@
                     "Nível 10: Regeneração Arcana (regenera metade da vida pela metade da mana)",
                     "Nível 15: Desbloqueado - 115% de dano com armas médias"
                 ],
-                descricao: "Seres graciosos da floresta com afinidade mágica"
+                descricao: "Seres graciosos da floresta com afinidade mágica",
+                estilo: "normal"
             },
             "demonio": {
                 buffs: {
@@ -391,7 +436,8 @@
                     "Magia de Fogo",
                     "Nível 10: Domínio Ardente (+30% dano por maldade acumulável)"
                 ],
-                descricao: "Seres infernais com poderes do abismo"
+                descricao: "Seres infernais com poderes do abismo",
+                estilo: "normal"
             },
             "dragao": {
                 buffs: {
@@ -406,7 +452,8 @@
                     "Nível 10: Rugido Sônico, Cauda Ardente, Fogo Despertado",
                     "Nível 15: Chuva de Meteoro, Garras Ardentes"
                 ],
-                descricao: "Seres ancestrais com poder elemental"
+                descricao: "Seres ancestrais com poder elemental",
+                estilo: "normal"
             },
             "cosmico": {
                 buffs: {
@@ -426,7 +473,8 @@
                     "Nível 15: Supernova",
                     "Nível 20: Domínio Cósmico (-120 mana/turno)"
                 ],
-                descricao: "Seres das estrelas com poder cósmico"
+                descricao: "Seres das estrelas com poder cósmico",
+                estilo: "normal"
             },
             "humano": {
                 buffs: {
@@ -436,26 +484,8 @@
                     "Pode farmar aura",
                     "Nível 15: Rage (quanto menos vida, mais dano)"
                 ],
-                descricao: "Raça versátil e adaptável"
-            },
-            "voidheart": {
-                buffs: {
-                    defesa: 0.45,
-                    vida: 0.35,
-                    dano: 0.60,
-                    mana: 0.15,
-                    danoVazio: 0.40,
-                    defesaVazio: 0.40,
-                    danoArmasVazio: 0.15,
-                    danoPureLight: 0.45
-                },
-                propriedades: [
-                    "Tentáculos do Vazio",
-                    "Entrar no Vazio (invisibilidade)",
-                    "Nível 10: Forma Verdadeira",
-                    "Nível 20: Lorde do Vazio"
-                ],
-                descricao: "Seres do vazio com poderes da escuridão"
+                descricao: "Raça versátil e adaptável",
+                estilo: "normal"
             }
         };
 
@@ -484,14 +514,29 @@
                 const div = document.createElement("div");
                 div.className = "race-option";
                 
-                // Destacar PureLight
+                // Estilo especial para PureLight
                 if (racaNome === "PureLight") {
                     div.style.border = "2px solid #ffeb3b";
                     div.style.background = "rgba(255, 235, 59, 0.1)";
+                    div.classList.add("voidheart-pulse");
+                }
+                
+                // Estilo especial para VoidHeart (preto/roxo)
+                if (racaNome === "VoidHeart") {
+                    div.style.border = "2px solid #8b00ff";
+                    div.style.background = "rgba(0, 0, 0, 0.7)";
+                    div.style.boxShadow = "0 0 10px rgba(139, 0, 255, 0.5)";
+                    div.classList.add("voidheart-pulse");
                 }
                 
                 div.innerHTML = `
-                    <strong style="${racaNome === 'PureLight' ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : 'color: #4d96ff'}">
+                    <strong style="${
+                        racaNome === 'PureLight' ? 
+                        'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : 
+                        racaNome === 'VoidHeart' ?
+                        'color: #8b00ff; text-shadow: 0 0 5px #8b00ff;' :
+                        'color: #4d96ff'
+                    }">
                         ${racaNome.toUpperCase()}
                     </strong><br>
                     <small style="color: #b8b8d1">${raca.descricao}</small>
@@ -610,15 +655,39 @@
             const resultadoDiv = document.getElementById("resultado");
             resultadoDiv.style.display = "block";
             
-            // Estilo especial para PureLight
+            // Determinar estilo baseado na raça
             const isPureLight = racaSelecionada === "PureLight";
-            const tituloStyle = isPureLight ? 
-                'color: #fffacd; text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b;' : 
-                'color: #ff6b6b;';
+            const isVoidHeart = racaSelecionada === "VoidHeart";
+            
+            // Configurações de estilo para cada raça especial
+            let tituloStyle, corPrincipal, corDestaque, emoji, corFundo, corBorda;
+            
+            if (isPureLight) {
+                tituloStyle = 'color: #fffacd; text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ffeb3b;';
+                corPrincipal = '#fffacd';
+                corDestaque = '#ffeb3b';
+                emoji = '✨';
+                corFundo = 'rgba(255, 235, 59, 0.1)';
+                corBorda = '#ffeb3b';
+            } else if (isVoidHeart) {
+                tituloStyle = 'color: #8b00ff; text-shadow: 0 0 10px #8b00ff, 0 0 20px #4b0082;';
+                corPrincipal = '#8b00ff';
+                corDestaque = '#4b0082';
+                emoji = '⚫';
+                corFundo = 'rgba(0, 0, 0, 0.7)';
+                corBorda = '#8b00ff';
+            } else {
+                tituloStyle = 'color: #ff6b6b;';
+                corPrincipal = '#ff6b6b';
+                corDestaque = '#4d96ff';
+                emoji = '🎭';
+                corFundo = 'rgba(255, 107, 107, 0.1)';
+                corBorda = '#ff6b6b';
+            }
             
             resultadoDiv.innerHTML = `
                 <h2 style="${tituloStyle} text-align: center; margin-bottom: 30px;">
-                    ${isPureLight ? '✨ ' : '🎭 '}${nome} - ${racaSelecionada.toUpperCase()}${isPureLight ? ' ✨' : ' 🎭'}
+                    ${emoji} ${nome} - ${racaSelecionada.toUpperCase()} ${emoji}
                 </h2>
                 
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -631,13 +700,13 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">❤️ VIDA</div>
-                        <div class="stat-value" style="${isPureLight ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : ''}">${vidaFinal}</div>
+                        <div class="stat-value" style="${isPureLight || isVoidHeart ? `color: ${corPrincipal}; text-shadow: 0 0 5px ${corDestaque};` : ''}">${vidaFinal}</div>
                         <small>Base: ${vidaBase} ${buffs.vida ? `(${formatarBuff(buffs.vida)})` : ''}</small>
                     </div>
                     
                     <div class="stat-card">
                         <div class="stat-label">⚔️ DANO</div>
-                        <div class="stat-value" style="${isPureLight ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : ''}">${danoFinal}</div>
+                        <div class="stat-value" style="${isPureLight || isVoidHeart ? `color: ${corPrincipal}; text-shadow: 0 0 5px ${corDestaque};` : ''}">${danoFinal}</div>
                         <div class="dice-display">
                             ${rolagemDano.formula}: [${rolagemDano.rolagens.join(' + ')}] = ${danoBase}
                             ${buffs.dano ? `<br>${formatarBuff(buffs.dano)}` : ''}
@@ -646,31 +715,31 @@
                     
                     <div class="stat-card">
                         <div class="stat-label">🔮 MANA</div>
-                        <div class="stat-value" style="${isPureLight ? 'color: #fffacd; text-shadow: 0 0 5px #ffeb3b;' : ''}">${manaFinal}</div>
+                        <div class="stat-value" style="${isPureLight || isVoidHeart ? `color: ${corPrincipal}; text-shadow: 0 0 5px ${corDestaque};` : ''}">${manaFinal}</div>
                         <small>Base: ${manaBase} ${buffs.mana ? `(${formatarBuff(buffs.mana)})` : ''}</small>
                     </div>
                 </div>
                 
-                <div style="background: ${isPureLight ? 'rgba(255, 235, 59, 0.1)' : 'rgba(255, 107, 107, 0.1)'}; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3 style="color: ${isPureLight ? '#fffacd' : '#ff6b6b'}; margin-bottom: 15px;">🎯 BUFFS ATIVOS</h3>
+                <div style="background: ${corFundo}; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid ${corBorda};">
+                    <h3 style="color: ${corPrincipal}; margin-bottom: 15px;">🎯 BUFFS ATIVOS</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
                         ${Object.entries(buffs)
                             .filter(([_, valor]) => valor !== 0)
                             .map(([nomeBuff, valor]) => `
-                                <div style="background: ${isPureLight ? 'rgba(255, 235, 59, 0.15)' : 'rgba(77, 150, 255, 0.1)'}; padding: 8px; border-radius: 5px; text-align: center;">
+                                <div style="background: ${isPureLight || isVoidHeart ? `rgba(${isPureLight ? '255, 235, 59' : '139, 0, 255'}, 0.15)` : 'rgba(77, 150, 255, 0.1)'}; padding: 8px; border-radius: 5px; text-align: center;">
                                     <strong>${nomeBuff}:</strong> ${formatarBuff(valor)}
                                 </div>
                             `).join('')}
                     </div>
                 </div>
                 
-                <div class="properties-section" style="${isPureLight ? 'border: 2px solid #ffeb3b; background: rgba(255, 235, 59, 0.05);' : ''}">
-                    <h3 style="color: ${isPureLight ? '#fffacd' : '#4d96ff'}; margin-bottom: 15px;">
-                        ${isPureLight ? '✨' : '🌟'} PROPRIEDADES DA RAÇA
+                <div class="properties-section" style="${isPureLight || isVoidHeart ? `border: 2px solid ${corBorda}; background: ${corFundo.replace('0.1', '0.05').replace('0.7', '0.3')};` : ''}">
+                    <h3 style="color: ${corPrincipal}; margin-bottom: 15px;">
+                        ${emoji} PROPRIEDADES DA RAÇA
                     </h3>
                     ${dadosRaca.propriedades.map(prop => `
-                        <div class="property-item" style="${isPureLight ? 'border-left-color: #ffeb3b; background: rgba(255, 235, 59, 0.1);' : ''}">
-                            ${isPureLight ? '✨' : '✅'} ${prop}
+                        <div class="property-item" style="${isPureLight || isVoidHeart ? `border-left-color: ${corBorda}; background: ${corFundo.replace('0.1', '0.2').replace('0.7', '0.4')};` : ''}">
+                            ${emoji} ${prop}
                         </div>
                     `).join('')}
                     
@@ -680,6 +749,17 @@
                             <div style="margin-top: 10px;">
                                 • Vulnerável a magias de trevas (+30% de dano)<br>
                                 • Perde 20% dos bônus em escuridão absoluta
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${isVoidHeart ? `
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(139, 0, 255, 0.15); border-radius: 8px; border: 1px solid #8b00ff;">
+                            <strong style="color: #8b00ff;">⚫ Poderes do Vazio:</strong>
+                            <div style="margin-top: 10px;">
+                                • +45% de dano contra PureLight<br>
+                                • Imunidade a efeitos de cegueira<br>
+                                • Pode se fundir com sombras para invisibilidade total
                             </div>
                         </div>
                     ` : ''}
